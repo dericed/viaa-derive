@@ -310,7 +310,7 @@ STREAMING_WEBM_RELATIVE_PATH="STREAMING_WEBM"
 # video settings
 STREAMING_WEBM_OPTS+=(-c:v vp9)
 STREAMING_WEBM_OPTS+=(-pix_fmt yuv420p)
-STREAMING_WEBM_OPTS+=(-maxrate 2000k) # set maximum bitrate despite quality
+STREAMING_WEBM_OPTS+=(-crf 30 -b:v 2000k) # use a constrained quality
 # audio settings
 STREAMING_WEBM_AUDIO_OPTS+=(-c:a opus)
 STREAMING_WEBM_AUDIO_OPTS+=(-strict -2)
