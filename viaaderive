@@ -114,15 +114,15 @@ while true ; do
         -y | --overwrite ) shift ; OUTPUTOPTIONS+=(-y) ;;
         -r | --report ) shift ; export FFREPORT="file=${LOGDIR}/$(basename "${0}")_%p_%t.txt" ; _mkdir2 "${LOGDIR}" ;;
         --ffv1 ) shift ; SCREENING_FFV1_ENABLE=true ;;
-        --ffv1path ) shift ; SCREENING_FFV1_ENABLE=true ; SCREENING_FFV1_OUTPUT="${1}" ; shift ;;
+        --ffv1path ) shift ; SCREENING_FFV1_ENABLE=true ; SCREENING_FFV1_RELATIVE_PATH="${1}" ; shift ;;
         --mpeg4 ) shift ; STREAMING_MPEG4_ENABLE=true ;;
-        --mpeg4path ) shift ; STREAMING_MPEG4_ENABLE=true ; STREAMING_MPEG4_OUTPUT="${1}" ; shift ;;
+        --mpeg4path ) shift ; STREAMING_MPEG4_ENABLE=true ; STREAMING_MPEG4_RELATIVE_PATH="${1}" ; shift ;;
         --prores ) shift ; SCREENING_PRORES_ENABLE=true ;;
-        --prorespath ) shift ; SCREENING_PRORES_ENABLE=true ; SCREENING_PRORES_OUTPUT="${1}" ; shift ;;
+        --prorespath ) shift ; SCREENING_PRORES_ENABLE=true ; SCREENING_PRORES_RELATIVE_PATH="${1}" ; shift ;;
         --webm ) shift ; STREAMING_WEBM_ENABLE=true ;;
-        --webmpath ) shift ; STREAMING_WEBM_ENABLE=true ; STREAMING_WEBM_OUTPUT="${1}" ; shift ;;
+        --webmpath ) shift ; STREAMING_WEBM_ENABLE=true ; STREAMING_WEBM_RELATIVE_PATH="${1}" ; shift ;;
         --framemd5 ) shift ; FRAMEMD5_ENABLE=true ;;
-        --framemd5path ) shift ; FRAMEMD5_ENABLE=true ; FRAMEMD5_OUTPUT="${1}" ; shift ;;
+        --framemd5path ) shift ; FRAMEMD5_ENABLE=true ; FRAMEMD5_RELATIVE_PATH="${1}" ; shift ;;
         -* | --* ) echo "Not sure what $1 means." ; echo ; _usage ;;
         * ) break ;;
     esac
@@ -288,7 +288,9 @@ _get_audio_mapping(){
 # output settings
 STREAMING_MPEG4_EXTENSION="mp4"
 STREAMING_MPEG4_SUFFIX=""
-STREAMING_MPEG4_RELATIVE_PATH="STREAMING_MPEG4"
+if [[ -z "${STREAMING_MPEG4_RELATIVE_PATH}" ]] ; then
+    STREAMING_MPEG4_RELATIVE_PATH="STREAMING_MPEG4"
+fi
 # video settings
 STREAMING_MPEG4_OPTS+=(-c:v libx264)
 STREAMING_MPEG4_OPTS+=(-profile:v high)
@@ -306,7 +308,9 @@ STREAMING_MPEG4_AUDIO_OPTS+=(-map 0:a:0)
 # output settings
 STREAMING_WEBM_EXTENSION="webm"
 STREAMING_WEBM_SUFFIX=""
-STREAMING_WEBM_RELATIVE_PATH="STREAMING_WEBM"
+if [[ -z "${STREAMING_WEBM_RELATIVE_PATH}" ]] ; then
+    STREAMING_WEBM_RELATIVE_PATH="STREAMING_WEBM"
+fi
 # video settings
 STREAMING_WEBM_OPTS+=(-c:v vp9)
 STREAMING_WEBM_OPTS+=(-pix_fmt yuv420p)
@@ -322,7 +326,9 @@ STREAMING_WEBM_AUDIO_OPTS+=(-map 0:a:0)
 # output settings
 PRODUCTION_IMX_EXTENSION="mov"
 PRODUCTION_IMX_SUFFIX=""
-PRODUCTION_IMX_RELATIVE_PATH="PRODUCTION_IMX"
+if [[ -z "${PRODUCTION_IMX_RELATIVE_PATH}" ]] ; then
+    PRODUCTION_IMX_RELATIVE_PATH="PRODUCTION_IMX"
+fi
 # video settings
 PRODUCTION_IMX_OPTS+=(-r pal)
 PRODUCTION_IMX_OPTS+=(-c:v mpeg2video)
@@ -360,7 +366,9 @@ PRODUCTION_IMX_AUDIO_OPTS+=(-map 0:a)
 # output settings
 FRAMEMD5_EXTENSION="md5"
 FRAMEMD5_SUFFIX="_framemd5"
-FRAMEMD5_RELATIVE_PATH="FRAMEMD5"
+if [[ -z "${FRAMEMD5_RELATIVE_PATH}" ]] ; then
+    FRAMEMD5_RELATIVE_PATH="FRAMEMD5"
+fi
 # container settings
 FRAMEMD5_OPTS+=(-f framemd5)
 
@@ -368,7 +376,9 @@ FRAMEMD5_OPTS+=(-f framemd5)
 # output settings
 SCREENING_PRORES_EXTENSION="mov"
 SCREENING_PRORES_SUFFIX=""
-SCREENING_PRORES_RELATIVE_PATH="SCREENING_PRORES"
+if [[ -z "${SCREENING_PRORES_RELATIVE_PATH}" ]] ; then
+    SCREENING_PRORES_RELATIVE_PATH="SCREENING_PRORES"
+fi
 # video settings
 SCREENING_PRORES_OPTS+=(-c:v prores_ks)
 SCREENING_PRORES_OPTS+=(-profile:v lt) # verify profile?
@@ -383,7 +393,9 @@ SCREENING_PRORES_AUDIO_OPTS+=(-map 0:a)
 # output settings
 SCREENING_FFV1_EXTENSION="mkv"
 SCREENING_FFV1_SUFFIX=""
-SCREENING_FFV1_RELATIVE_PATH="SCREENING_FFV1"
+if [[ -z "${SCREENING_FFV1_RELATIVE_PATH}" ]] ; then
+    SCREENING_FFV1_RELATIVE_PATH="SCREENING_FFV1"
+fi
 # video settings
 SCREENING_FFV1_OPTS+=(-c:v ffv1)
 SCREENING_FFV1_OPTS+=(-level 3)
