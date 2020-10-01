@@ -313,6 +313,7 @@ STREAMING_WEBM_OPTS+=(-pix_fmt yuv420p)
 STREAMING_WEBM_OPTS+=(-maxrate 2000k) # set maximum bitrate despite quality
 # audio settings
 STREAMING_WEBM_AUDIO_OPTS+=(-c:a opus)
+STREAMING_WEBM_AUDIO_OPTS+=(-strict -2)
 # container settings
 STREAMING_WEBM_OPTS+=(-f webm)
 STREAMING_WEBM_AUDIO_OPTS+=(-map 0:a:0)
