@@ -12,6 +12,52 @@ INPUTOPTIONS+=(-vsync 0)
 INPUTOPTIONS+=(-hide_banner)
 LOGDIR="LOGS"
 
+_get_iso8601_c(){
+    date +%Y%m%d-%H%M%S
+}
+
+# _report function handles display of messages to operator
+_report(){
+    local RED="$(tput setaf 1)"   # Red      - For Warnings
+    local GREEN="$(tput setaf 2)" # Green    - For Declarations
+    local BLUE="$(tput setaf 4)"  # Blue     - For Questions
+    local NC="$(tput sgr0)"       # No Color
+    local COLOR=""
+    local STARTMESSAGE=""
+    local ENDMESSAGE=""
+    local ECHOOPT=""
+    local LOG_MESSAGE=""
+    OPTIND=1
+    while getopts ":qdwstn" OPT; do
+        case "${OPT}" in
+            q) COLOR="${BLUE}" ;;                         # question mode, use color blue
+            d) COLOR="${GREEN}" ;;                        # declaration mode, use color green
+            w) COLOR="${RED}" ; LOG_MESSAGE="Y" ;;        # warning mode, use color red
+            s) STARTMESSAGE+=([$(basename "${0}")] ) ;;   # prepend scriptname to the message
+            t) STARTMESSAGE+=($(_get_iso8601) '- ' ) ;;   # prepend timestamp to the message
+            n) ECHOOPT="-n" ;;                            # to avoid line breaks after echo
+        esac
+    done
+    shift $(( ${OPTIND} - 1 ))
+    MESSAGE="${1}"
+    echo "${ECHOOPT}" "${COLOR}${STARTMESSAGE[@]}${MESSAGE}${NC}"
+}
+
+_mkdir2(){
+    local DIR2MAKE=""
+    while [ "${*}" != "" ] ; do
+        DIR2MAKE="${1}"
+        if [ ! -d "${DIR2MAKE}" ] ; then
+            mkdir -p "${DIR2MAKE}"
+            if [ "${?}" -ne 0 ]; then
+                _report -wt "${0}: Can't create directory at ${DIR2MAKE}"
+                exit 1
+            fi
+        fi
+        shift
+    done
+}
+
 # usage
 _usage(){
     echo "VIAA derivative script"
@@ -107,52 +153,6 @@ if [[ "+$OUTPUT_OPTIONS+" = *"+ffv1+"* ]] ; then
 elif [[ -z "${SCREENING_FFV1_ENABLE+x}" ]] ; then
     SCREENING_FFV1_ENABLE=false
 fi
-
-_get_iso8601_c(){
-    date +%Y%m%d-%H%M%S
-}
-
-# _report function handles display of messages to operator
-_report(){
-    local RED="$(tput setaf 1)"   # Red      - For Warnings
-    local GREEN="$(tput setaf 2)" # Green    - For Declarations
-    local BLUE="$(tput setaf 4)"  # Blue     - For Questions
-    local NC="$(tput sgr0)"       # No Color
-    local COLOR=""
-    local STARTMESSAGE=""
-    local ENDMESSAGE=""
-    local ECHOOPT=""
-    local LOG_MESSAGE=""
-    OPTIND=1
-    while getopts ":qdwstn" OPT; do
-        case "${OPT}" in
-            q) COLOR="${BLUE}" ;;                         # question mode, use color blue
-            d) COLOR="${GREEN}" ;;                        # declaration mode, use color green
-            w) COLOR="${RED}" ; LOG_MESSAGE="Y" ;;        # warning mode, use color red
-            s) STARTMESSAGE+=([$(basename "${0}")] ) ;;   # prepend scriptname to the message
-            t) STARTMESSAGE+=($(_get_iso8601) '- ' ) ;;   # prepend timestamp to the message
-            n) ECHOOPT="-n" ;;                            # to avoid line breaks after echo
-        esac
-    done
-    shift $(( ${OPTIND} - 1 ))
-    MESSAGE="${1}"
-    echo "${ECHOOPT}" "${COLOR}${STARTMESSAGE[@]}${MESSAGE}${NC}"
-}
-
-_mkdir2(){
-    local DIR2MAKE=""
-    while [ "${*}" != "" ] ; do
-        DIR2MAKE="${1}"
-        if [ ! -d "${DIR2MAKE}" ] ; then
-            mkdir -p "${DIR2MAKE}"
-            if [ "${?}" -ne 0 ]; then
-                _report -wt "${0}: Can't create directory at ${DIR2MAKE}"
-                exit 1
-            fi
-        fi
-        shift
-    done
-}
 
 _unset_variables(){
     unset VIDEOFILTERCHAIN
