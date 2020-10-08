@@ -402,6 +402,10 @@ SCREENING_FFV1_OPTS+=(-level 3)
 SCREENING_FFV1_OPTS+=(-g 1)
 SCREENING_FFV1_OPTS+=(-slices 24)
 SCREENING_FFV1_OPTS+=(-slicecrc 1)
+SCREENING_FFV1_OPTS+=(-color_primaries smpte170m)
+SCREENING_FFV1_OPTS+=(-color_trc bt709)
+SCREENING_FFV1_OPTS+=(-colorspace smpte170m)
+SCREENING_FFV1_OPTS+=(-color_range mpeg)
 # audio settings
 SCREENING_FFV1_AUDIO_OPTS+=(-c:a flac)
 # container settings
